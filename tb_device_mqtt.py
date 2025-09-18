@@ -1170,6 +1170,11 @@ class TBDeviceMqttClient:
                                 int(error_appear_counter * sleep_time),
                                 self._client._max_inflight_messages,
                                 self._client._max_queued_messages)
+                    if error_appear_counter > 250:
+                        log.warning("Restarted Thingsboard connection")
+                        self.disconnect()
+                        self.connect()
+                        break
                 if int(monotonic()) - self.__error_logged > 10:
                     log.debug("Queue size exceeded, waiting for messages to be processed by paho client.")
                     self.__error_logged = int(monotonic())
